@@ -49,6 +49,7 @@ class VetController {
 		Page<Vet> paginated = findPaginated(page);
 		vets.getVetList().addAll(paginated.toList());
 		return addPaginationModel(page, paginated, model);
+
 	}
 
 	private String addPaginationModel(int page, Page<Vet> paginated, Model model) {
@@ -61,7 +62,7 @@ class VetController {
 	}
 
 	private Page<Vet> findPaginated(int page) {
-		int pageSize = 20;
+		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 		return vetRepository.findAll(pageable);
 	}

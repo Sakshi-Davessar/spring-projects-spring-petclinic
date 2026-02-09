@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 
@@ -71,19 +70,18 @@ class OwnerController {
 	}
 
 	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
+	public String processCreationForm(@Valid Owner owner, BindingResult result) {
 		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 
 		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "New Owner Created");
 		return "redirect:/owners/" + owner.getId();
 	}
 
 	@GetMapping("/owners/find")
-	public String initFindForm() {
+	public String initFindForm(Map<String, Object> model) {
+		model.put("owner", new Owner());
 		return "owners/findOwners";
 	}
 
@@ -114,6 +112,7 @@ class OwnerController {
 	}
 
 	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
+		model.addAttribute("listOwners", paginated);
 		List<Owner> listOwners = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
@@ -136,16 +135,14 @@ class OwnerController {
 	}
 
 	@PostMapping("/owners/{ownerId}/edit")
-	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
-			RedirectAttributes redirectAttributes) {
+	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
+			@PathVariable("ownerId") int ownerId) {
 		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in updating the owner.");
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 
 		owner.setId(ownerId);
 		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
 		return "redirect:/owners/{ownerId}";
 	}
 

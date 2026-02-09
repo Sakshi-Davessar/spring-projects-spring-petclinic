@@ -19,7 +19,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,13 +44,6 @@ public interface VetRepository extends Repository<Vet, Integer> {
 	@Transactional(readOnly = true)
 	@Cacheable("vets")
 	Collection<Vet> findAll() throws DataAccessException;
-
-	/**
-	 * Count the number of <code>Vet</code>s in the data store.
-	 */
-	@Transactional(readOnly = true)
-	@Query("SELECT COUNT(v) FROM Vet v")
-	Integer countVets() throws DataAccessException;
 
 	/**
 	 * Retrieve all <code>Vet</code>s from data store in Pages

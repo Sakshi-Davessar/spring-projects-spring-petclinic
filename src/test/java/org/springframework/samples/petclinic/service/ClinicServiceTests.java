@@ -112,7 +112,7 @@ class ClinicServiceTests {
 		owner.setCity("Wollongong");
 		owner.setTelephone("4444444444");
 		this.owners.save(owner);
-		assertThat(owner.getId()).isNotZero();
+		assertThat(owner.getId().longValue()).isNotEqualTo(0);
 
 		owners = this.owners.findByLastName("Schultz", pageable);
 		assertThat(owners.getTotalElements()).isEqualTo(found + 1);
@@ -155,12 +155,12 @@ class ClinicServiceTests {
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
 		owner6.addPet(pet);
-		assertThat(owner6.getPets()).hasSize(found + 1);
+		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 
 		this.owners.save(owner6);
 
 		owner6 = this.owners.findById(6);
-		assertThat(owner6.getPets()).hasSize(found + 1);
+		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 		// checks that id has been generated
 		pet = owner6.getPet("bowser");
 		assertThat(pet.getId()).isNotNull();
@@ -168,7 +168,7 @@ class ClinicServiceTests {
 
 	@Test
 	@Transactional
-	void shouldUpdatePetName() {
+	void shouldUpdatePetName() throws Exception {
 		Owner owner6 = this.owners.findById(6);
 		Pet pet7 = owner6.getPet(7);
 		String oldName = pet7.getName();
@@ -186,11 +186,11 @@ class ClinicServiceTests {
 	void shouldFindVets() {
 		Collection<Vet> vets = this.vets.findAll();
 
-		Vet vet = EntityUtils.getById(vets, Vet.class, 2);
-		assertThat(vet.getLastName()).isEqualTo("Leary");
+		Vet vet = EntityUtils.getById(vets, Vet.class, 3);
+		assertThat(vet.getLastName()).isEqualTo("Douglas");
 		assertThat(vet.getNrOfSpecialties()).isEqualTo(2);
-		assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("anesthesia");
-		assertThat(vet.getSpecialties().get(1).getName()).isEqualTo("dentistry");
+		assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("dentistry");
+		assertThat(vet.getSpecialties().get(1).getName()).isEqualTo("surgery");
 	}
 
 	@Test
@@ -208,21 +208,19 @@ class ClinicServiceTests {
 		owner6 = this.owners.findById(6);
 
 		assertThat(pet7.getVisits()) //
-			.hasSize(found + 1) //
-			.allMatch(value -> value.getId() != null);
+				.hasSize(found + 1) //
+				.allMatch(value -> value.getId() != null);
 	}
 
 	@Test
-	void shouldFindVisitsByPetId() {
+	void shouldFindVisitsByPetId() throws Exception {
 		Owner owner6 = this.owners.findById(6);
 		Pet pet7 = owner6.getPet(7);
 		Collection<Visit> visits = pet7.getVisits();
 
 		assertThat(visits) //
-			.hasSize(2) //
-			.element(0)
-			.extracting(Visit::getDate)
-			.isNotNull();
+				.hasSize(2) //
+				.element(0).extracting(Visit::getDate).isNotNull();
 	}
 
 }

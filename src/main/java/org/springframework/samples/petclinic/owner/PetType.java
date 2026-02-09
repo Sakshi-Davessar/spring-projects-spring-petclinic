@@ -27,6 +27,4 @@ import jakarta.persistence.Table;
 @Table(name = "types")
 public class PetType extends NamedEntity {
 
-	private static final long serialVersionUID = -7611995145056548231L;
-
 }

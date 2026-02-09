@@ -30,8 +30,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -46,19 +46,17 @@ import jakarta.validation.constraints.NotBlank;
 @Table(name = "owners")
 public class Owner extends Person {
 
-	private static final long serialVersionUID = 7676019169107660494L;
-
 	@Column(name = "address")
-	@NotBlank
+	@NotEmpty
 	private String address;
 
 	@Column(name = "city")
-	@NotBlank
+	@NotEmpty
 	private String city;
 
 	@Column(name = "telephone")
-	@NotBlank
-	@Pattern(regexp = "\\d{10}", message = "Telephone must be a 10-digit number")
+	@NotEmpty
+	@Digits(fraction = 0, integer = 10)
 	private String telephone;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -111,7 +109,7 @@ public class Owner extends Person {
 
 	/**
 	 * Return the Pet with the given id, or null if none found for this Owner.
-	 * @param id to test
+	 * @param name to test
 	 * @return a pet if pet id is already in use
 	 */
 	public Pet getPet(Integer id) {
@@ -134,9 +132,10 @@ public class Owner extends Person {
 	public Pet getPet(String name, boolean ignoreNew) {
 		name = name.toLowerCase();
 		for (Pet pet : getPets()) {
-			String compName = pet.getName();
-			if (compName != null && compName.equalsIgnoreCase(name)) {
-				if (!ignoreNew || !pet.isNew()) {
+			if (!ignoreNew || !pet.isNew()) {
+				String compName = pet.getName();
+				compName = compName == null ? "" : compName.toLowerCase();
+				if (compName.equals(name)) {
 					return pet;
 				}
 			}
@@ -146,14 +145,10 @@ public class Owner extends Person {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId())
-			.append("new", this.isNew())
-			.append("lastName", this.getLastName())
-			.append("firstName", this.getFirstName())
-			.append("address", this.address)
-			.append("city", this.city)
-			.append("telephone", this.telephone)
-			.toString();
+		return new ToStringCreator(this).append("id", this.getId()).append("new", this.isNew())
+				.append("lastName", this.getLastName()).append("firstName", this.getFirstName())
+				.append("address", this.address).append("city", this.city).append("telephone", this.telephone)
+				.toString();
 	}
 
 	/**
@@ -161,7 +156,7 @@ public class Owner extends Person {
 	 * @param petId the identifier of the {@link Pet}, must not be {@literal null}.
 	 * @param visit the visit to add, must not be {@literal null}.
 	 */
-	public void addVisit(Integer petId, Visit visit) {
+	public Owner addVisit(Integer petId, Visit visit) {
 
 		Assert.notNull(petId, "Pet identifier must not be null!");
 		Assert.notNull(visit, "Visit must not be null!");
@@ -171,6 +166,8 @@ public class Owner extends Person {
 		Assert.notNull(pet, "Invalid Pet identifier!");
 
 		pet.addVisit(visit);
+
+		return this;
 	}
 
 }
