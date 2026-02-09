@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2025 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,13 +43,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PetTypeFormatterTests {
 
 	@Mock
-	private PetTypeRepository types;
+	private OwnerRepository pets;
 
 	private PetTypeFormatter petTypeFormatter;
 
 	@BeforeEach
 	void setup() {
-		this.petTypeFormatter = new PetTypeFormatter(types);
+		this.petTypeFormatter = new PetTypeFormatter(pets);
 	}
 
 	@Test
@@ -62,14 +62,14 @@ class PetTypeFormatterTests {
 
 	@Test
 	void shouldParse() throws ParseException {
-		given(types.findPetTypes()).willReturn(makePetTypes());
+		given(this.pets.findPetTypes()).willReturn(makePetTypes());
 		PetType petType = petTypeFormatter.parse("Bird", Locale.ENGLISH);
 		assertThat(petType.getName()).isEqualTo("Bird");
 	}
 
 	@Test
-	void shouldThrowParseException() {
-		given(types.findPetTypes()).willReturn(makePetTypes());
+	void shouldThrowParseException() throws ParseException {
+		given(this.pets.findPetTypes()).willReturn(makePetTypes());
 		Assertions.assertThrows(ParseException.class, () -> {
 			petTypeFormatter.parse("Fish", Locale.ENGLISH);
 		});
@@ -82,11 +82,15 @@ class PetTypeFormatterTests {
 	private List<PetType> makePetTypes() {
 		List<PetType> petTypes = new ArrayList<>();
 		petTypes.add(new PetType() {
+			private static final long serialVersionUID = 4182992965923515553L;
+
 			{
 				setName("Dog");
 			}
 		});
 		petTypes.add(new PetType() {
+			private static final long serialVersionUID = 1823182409934678856L;
+
 			{
 				setName("Bird");
 			}

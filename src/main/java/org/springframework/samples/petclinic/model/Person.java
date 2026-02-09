@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2025 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,13 @@ import jakarta.validation.constraints.NotBlank;
 @MappedSuperclass
 public class Person extends BaseEntity {
 
-	@Column
+	private static final long serialVersionUID = -5934070342233945557L;
+
+	@Column(name = "first_name")
 	@NotBlank
 	private String firstName;
 
-	@Column
+	@Column(name = "last_name")
 	@NotBlank
 	private String lastName;
 

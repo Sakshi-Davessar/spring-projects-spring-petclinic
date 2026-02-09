@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2025 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.testcontainers.mysql.MySQLContainer;
-import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.containers.MySQLContainer;
 
 /**
  * PetClinic Spring Boot Application.
  *
  * @author Dave Syer
+ *
  */
 @Configuration
 public class MysqlTestApplication {
@@ -35,13 +35,12 @@ public class MysqlTestApplication {
 	@ServiceConnection
 	@Profile("mysql")
 	@Bean
-	static MySQLContainer container() {
-		return new MySQLContainer(DockerImageName.parse("mysql:9.5"));
+	static MySQLContainer<?> container() {
+		return new MySQLContainer<>("mysql:8.4");
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(PetClinicApplication.class, "--spring.profiles.active=mysql",
-				"--spring.docker.compose.enabled=false");
+		SpringApplication.run(PetClinicApplication.class, "--spring.profiles.active=mysql");
 	}
 
 }

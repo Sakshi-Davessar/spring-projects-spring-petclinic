@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2025 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 @Table(name = "visits")
 public class Visit extends BaseEntity {
+
+	private static final long serialVersionUID = -8061148591973721283L;
 
 	@Column(name = "visit_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
